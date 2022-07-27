@@ -2,6 +2,7 @@ package com.github.accounting.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -21,15 +22,16 @@ public class GlobalExceptionHandler {
                 .body(errorResponse);
     }
 
-    @ExceptionHandler(RuntimeException.class)
-    ResponseEntity<?> runtimeExceptionHandler(RuntimeException exception) {
-        ErrorResponse errorResponse = ErrorResponse.builder()
-                .statusCode(500)
-                .message(exception.getMessage())
-                .code(BizErrorCode.OTHER)
-                .errorType(ServiceException.ErrorType.Service)
-                .build();
-        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
-                .body(errorResponse);
-    }
+//    @ExceptionHandler(RuntimeException.class)
+//    ResponseEntity<?> runtimeExceptionHandler(RuntimeException exception) {
+//        HttpMessageNotReadableException ex = (HttpMessageNotReadableException) exception;
+//        ErrorResponse errorResponse = ErrorResponse.builder()
+//                .statusCode(500)
+//                .message(exception.getMessage())
+//                .code(BizErrorCode.OTHER)
+//                .errorType(ServiceException.ErrorType.Service)
+//                .build();
+//        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR.value())
+//                .body(errorResponse);
+//    }
 }
