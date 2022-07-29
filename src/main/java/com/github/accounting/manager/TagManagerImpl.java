@@ -1,6 +1,7 @@
 package com.github.accounting.manager;
 
 import com.github.accounting.UserContext;
+import com.github.accounting.dao.RecordDaoImpl;
 import com.github.accounting.dao.TagDaoImpl;
 import com.github.accounting.exception.InvalidParameterException;
 import com.github.accounting.exception.ResourceNotFoundException;
@@ -8,6 +9,7 @@ import com.github.accounting.model.persistence.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.Optional;
 
 @Component
@@ -59,5 +61,10 @@ public class TagManagerImpl implements TagManager {
     @Override
     public Tag getTagByDescription(String description, Long userId) {
         return tagDao.getTagByDescription(description, userId);
+    }
+
+    @Override
+    public List<Tag> getTagListByIds(List<Long> ids) {
+        return tagDao.getTagListByIds(ids);
     }
 }

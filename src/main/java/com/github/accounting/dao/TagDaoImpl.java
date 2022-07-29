@@ -1,9 +1,12 @@
 package com.github.accounting.dao;
 
 import com.github.accounting.dao.mapper.TagMapper;
+import com.github.accounting.model.persistence.Record;
 import com.github.accounting.model.persistence.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 @Repository
 public class TagDaoImpl implements TagDao {
@@ -39,5 +42,10 @@ public class TagDaoImpl implements TagDao {
     @Override
     public Tag getTagByDescription(String description, Long userId) {
         return tagMapper.getTagByDescription(description, userId);
+    }
+
+    @Override
+    public List<Tag> getTagListByIds(List<Long> ids) {
+        return tagMapper.getTagListByIds(ids);
     }
 }

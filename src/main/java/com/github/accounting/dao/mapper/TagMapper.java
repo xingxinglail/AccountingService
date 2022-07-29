@@ -4,6 +4,8 @@ import com.github.accounting.dao.provider.TagSqlProvider;
 import com.github.accounting.model.persistence.Tag;
 import org.apache.ibatis.annotations.*;
 
+import java.util.List;
+
 @Mapper
 public interface TagMapper {
 
@@ -24,4 +26,7 @@ public interface TagMapper {
 
     @Select("SELECT id, user_id as userId, description, status, create_time as createTime, update_time as updateTime FROM as_tag WHERE description = #{description} AND user_id = #{userId} AND status = 1")
     Tag getTagByDescription(String description, Long userId);
+
+    @SelectProvider(type = TagSqlProvider.class, method = "getTagListByIds")
+    List<Tag> getTagListByIds(@Param("id") List<Long> ids);
 }

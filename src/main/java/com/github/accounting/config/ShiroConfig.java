@@ -1,5 +1,7 @@
 package com.github.accounting.config;
 
+import com.github.accounting.UserContext;
+import com.github.accounting.manager.UserInfoManager;
 import lombok.val;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.credential.HashedCredentialsMatcher;
@@ -10,13 +12,20 @@ import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.servlet.Filter;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Optional;
 
 @Configuration
-public class ShiroConfig {
+public class ShiroConfig implements WebMvcConfigurer {
 
     private static final String HASH_ALGORITHM_NAME = "SHA-256";
 
@@ -24,9 +33,17 @@ public class ShiroConfig {
 
     private final ShiroLoginFilter shiroLoginFilter;
 
+    private final UserInfoManager userInfoManager;
+
     @Autowired
-    public ShiroConfig(ShiroLoginFilter shiroLoginFilter) {
+    public ShiroConfig(ShiroLoginFilter shiroLoginFilter, UserInfoManager userInfoManager) {
         this.shiroLoginFilter = shiroLoginFilter;
+        this.userInfoManager = userInfoManager;
+    }
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(new UserLoginInterceptor(userInfoManager));
     }
 
     @Bean
@@ -63,5 +80,28 @@ public class ShiroConfig {
         matcher.setHashSalted(true);
         matcher.setStoredCredentialsHexEncoded(false);
         return matcher;
+    }
+
+    private static class UserLoginInterceptor implements HandlerInterceptor {
+
+        private final UserInfoManager userInfoManager;
+
+        UserLoginInterceptor(UserInfoManager userInfoManager) {
+            this.userInfoManager = userInfoManager;
+        }
+
+        @Override
+        public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+            String username = (String) SecurityUtils.getSubject().getPrincipal();
+            if (username != null) {
+                Optional.ofNullable(userInfoManager.getUserInfoByUserName(username)).ifPresent(UserContext::setCurrentUser);
+            }
+            return true;
+        }
+
+        @Override
+        public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+            UserContext.setCurrentUser(null);
+        }
     }
 }

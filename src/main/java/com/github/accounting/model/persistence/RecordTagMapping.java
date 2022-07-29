@@ -11,17 +11,15 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Tag {
+public class RecordTagMapping {
 
     private Long id;
 
     private Long userId;
 
-    private String description;
+    private Long recordId;
 
-    private Integer status;
+    private Long tagId;
 
-    private LocalDateTime createTime;
-
-    private LocalDateTime updateTime;
+    private LocalDateTime create_time;
 }
