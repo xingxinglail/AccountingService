@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.accounting.dao.mapper.RecordTagMappingMapper">
+
+    <select id="getRecordTagMapping" parameterType="java.util.List"
+            resultType="com.github.accounting.model.persistence.RecordTagMapping">
+        SELECT art.record_id    as recordId,
+               `at`.id          as tagId,
+               `at`.description as tagDescription
+        FROM as_record_tag art
+                 LEFT JOIN as_tag `at` ON art.tag_id = `at`.id
+        WHERE `at`.status = 1
+          AND art.record_id in
+        <foreach item="id" open="(" close=")" collection="recordIds" separator=",">
+            #{id}
+        </foreach>
+    </select>
+</mapper>

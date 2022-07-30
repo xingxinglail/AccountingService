@@ -1,5 +1,6 @@
 package com.github.accounting.model.persistence;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -20,6 +21,8 @@ public class RecordTagMapping {
     private Long recordId;
 
     private Long tagId;
+
+    private String tagDescription;
 
     private LocalDateTime create_time;
 }

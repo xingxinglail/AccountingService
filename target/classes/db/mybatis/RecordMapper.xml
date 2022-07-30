@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.accounting.dao.mapper.RecordMapper">
+
+    <update id="updateRecord" parameterType="com.github.accounting.model.persistence.Record">
+        update as_record
+        <set>
+            <if test="amount != null">
+                amount = #{amount},
+            </if>
+            <if test="category == 1 || category == 2">
+                category = #{category},
+            </if>
+            <if test="note != null">
+                note = #{note}
+            </if>
+        </set>
+        where status = 1 AND id = #{id} AND user_id = #{userId}
+    </update>
+
+    <select id="countRecordList" resultType="java.lang.Integer">
+        select count(1)
+        from as_record
+        where status = 1
+          AND user_id = #{userId}
+    </select>
+
+    <select id="getRecordList" resultType="com.github.accounting.model.persistence.Record">
+        select *
+        from as_record
+        where status = 1 AND user_id = #{userId}
+        order by create_time desc
+        LIMIT #{start}, #{end}
+    </select>
+</mapper>

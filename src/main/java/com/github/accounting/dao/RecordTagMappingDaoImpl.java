@@ -29,4 +29,12 @@ public class RecordTagMappingDaoImpl {
                 .collect(Collectors.toList());
         recordTagMappingMapper.batchRecordTagMapping(recordTagMappings);
     }
+
+    public void deleteRecordTagMapping(Long recordId, Long userId) {
+        recordTagMappingMapper.deleteRecordTagMapping(recordId, userId);
+    }
+
+    public List<RecordTagMapping> getRecordTagMapping(List<Long> recordIds) {
+        return recordTagMappingMapper.getRecordTagMapping(recordIds);
+    }
 }

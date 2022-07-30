@@ -3,13 +3,13 @@ package com.github.accounting.controller;
 import com.github.accounting.exception.InvalidParameterException;
 import com.github.accounting.manager.RecordManager;
 import com.github.accounting.model.persistence.Record;
+import com.github.accounting.model.service.PageResponse;
 import org.apache.shiro.util.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/v1.0/record")
@@ -22,13 +22,25 @@ public class RecordController {
         this.recordManager = recordManager1;
     }
 
+    @GetMapping
+    public ResponseEntity<PageResponse<List<Record>>> getRecordList(@RequestParam("pageSize") Integer pageSize, @RequestParam("pageNumber") Integer pageNumber) {
+        return ResponseEntity.ok(recordManager.getRecordList(pageSize, pageNumber));
+    }
+
     @PostMapping
-    public ResponseEntity<Record> addRecord(@RequestBody Record record) {
+    public ResponseEntity<Long> addRecord(@RequestBody Record record) {
         if (checkRecord(record)) {
             throw new InvalidParameterException("参数错误");
         }
-        Record record1 = recordManager.createRecord(record);
-        System.out.println(record1);
+        return ResponseEntity.ok(recordManager.createRecord(record));
+    }
+
+    @PutMapping
+    public ResponseEntity<Object> updateRecord(@RequestBody Record record) {
+        if (record.getId() == null || checkRecord(record)) {
+            throw new InvalidParameterException("参数错误");
+        }
+        recordManager.updateRecord(record);
         return ResponseEntity.ok(null);
     }
 
