@@ -5,3 +5,6 @@ spring:
     url: jdbc:mysql://localhost:3306/accounting_service?useSSL=false&allowPublicKeyRetrieval=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai
     username: root
     password: 123456
+
+mybatis:
+  config-location: classpath:db/mybatis/config.xml
